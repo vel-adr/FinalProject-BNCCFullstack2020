@@ -67,7 +67,9 @@ class ThreadController extends Controller
      */
     public function edit($id)
     {
-        //
+        $thread = Thread::find($id);
+
+        return view('threadedit', compact('thread'));
     }
 
     /**
@@ -79,7 +81,14 @@ class ThreadController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $thread = Thread::find($id);
+        $thread->title = $request->title;
+        $thread->content = $request->content;
+        $thread->save();
+
+        $comments = $thread->comments;
+
+        return view('threaddetail', compact('thread', 'comments'));
     }
 
     /**
@@ -90,6 +99,11 @@ class ThreadController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $thread = Thread::find($id);
+        $thread->delete();
+
+        $threads = Thread::all();
+
+        return view('thread', compact('threads'));
     }
 }
