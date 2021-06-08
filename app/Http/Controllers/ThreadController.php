@@ -15,7 +15,7 @@ class ThreadController extends Controller
     public function index()
     {
         $threads = Thread::all();
-        return view('thread', compact('threads'));
+        return view('thread.index', compact('threads'));
     }
 
     /**
@@ -25,7 +25,7 @@ class ThreadController extends Controller
      */
     public function create()
     {
-        return view('threadform');
+        return view('thread.create');
     }
 
     /**
@@ -56,7 +56,7 @@ class ThreadController extends Controller
         $thread = Thread::find($id);
         $comments = $thread->comments;
 
-        return view('threaddetail', compact('thread', 'comments'));
+        return view('thread.detail', compact('thread', 'comments'));
     }
 
     /**
@@ -69,7 +69,7 @@ class ThreadController extends Controller
     {
         $thread = Thread::find($id);
 
-        return view('threadedit', compact('thread'));
+        return view('thread.edit', compact('thread'));
     }
 
     /**
@@ -88,7 +88,7 @@ class ThreadController extends Controller
 
         $comments = $thread->comments;
 
-        return view('threaddetail', compact('thread', 'comments'));
+        return view('thread.detail', compact('thread', 'comments'));
     }
 
     /**
@@ -104,6 +104,6 @@ class ThreadController extends Controller
 
         $threads = Thread::all();
 
-        return view('thread', compact('threads'));
+        return view('thread.index', compact('threads'));
     }
 }
