@@ -8,23 +8,14 @@ use Illuminate\Http\Request;
 class CommentController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Show the form for creating a new resource.
-     *
+     * @param \Illuminate\Http\Request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $id = $request->id;
+        return view('comment.create', compact('id'));
     }
 
     /**
@@ -35,7 +26,14 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'comment' => 'required|max:255'
+        ]);
+
+        Comment::create($request->all());
+
+        $url = '/thread' . '/' . $request->thread_id;
+        return redirect($url);
     }
 
     /**
