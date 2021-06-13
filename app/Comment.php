@@ -18,8 +18,8 @@ class Comment extends Model
         return $this->belongsTo('App\Thread');
     }
 
-    public function reply()
+    public function replies()
     {
-        return $this->hasOne('App\Reply');
+        return $this->hasMany('App\Reply');
     }
 }

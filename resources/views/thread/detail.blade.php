@@ -117,17 +117,19 @@ $imgName = $ts->photo;
                                 </form>
                             </div>
 
-                            @if ($c->reply != null)
+                            @if ($c->replies != null)
+                            @foreach ($c->replies as $rep)
                             <div class="media mt-4 py-4 px-4 border">
                                 <div class="user mr-3">
                                     <img src="{{ url('/img/' . $imgName) }}" alt="..."
                                         style="width: 40px; height: 40px; border-radius:50%">
-                                    <p><strong>{{ $c->user->name }}</strong></p>
+                                    <p><strong>{{ $rep->user->name }}</strong></p>
                                 </div>
                                 <div class="col media-body">
-                                    <p class="mt-2">{{ $c->reply->reply }}</p>
+                                    <p class="mt-2">{{ $rep->reply }}</p>
                                 </div>
                             </div>
+                            @endforeach
                             @endif
                         </div>
 
