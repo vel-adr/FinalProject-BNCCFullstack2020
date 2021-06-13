@@ -25,8 +25,7 @@
             @enderror
         </div>
 
-        {{-- sementara profileid selalu 1 karena belum ada login --}}
-        <input type="hidden" name="user_id" value="1">
+        <input type="hidden" name="user_id" value="{{ Auth::id() }}">
         <input type="hidden" name="status" value="open">
 
         <button type="submit" class="btn btn-outline-success">Submit</button>

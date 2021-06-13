@@ -31,9 +31,11 @@ $imgName = $ts->photo;
                             </div>
                         </div>
 
+                        @if (Auth::id() == $thread->user_id)
                         <div class="col-sm-2">
                             <a href="/thread/{{ $thread->id }}/edit" class="btn btn-outline-success">Edit Thread</a>
                         </div>
+                        @endif
                     </div>
                 </div>
 
