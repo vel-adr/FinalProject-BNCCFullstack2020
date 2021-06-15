@@ -27,4 +27,6 @@ Route::post('/comment/create/{id}', 'CommentController@create')->name('comment.f
 
 Route::post('/comment/store', 'CommentController@store')->name('comment.create');
 
+Route::post('/comment/update', 'CommentController@update')->name('comment.update');
+
 Route::post('reply/store', 'ReplyController@store')->name('reply.create');

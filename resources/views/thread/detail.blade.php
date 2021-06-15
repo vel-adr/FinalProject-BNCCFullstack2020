@@ -110,6 +110,13 @@ $imgName = $ts->photo;
                                 aria-expanded="false" aria-controls="collapse-comment-{{ $c->id }}">
                                 Reply
                             </button>
+                            @if ($c->user_id == Auth::id())
+                            <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
+                                data-target="#collapse-comment-{{ $c->id }}-edit" aria-expanded="false"
+                                aria-controls="collapse-comment-{{ $c->id }}">
+                                Edit
+                            </button>
+                            @endif
                             <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}">
                                 <form method="POST" action="{{ route('reply.create') }}">
                                     @csrf
@@ -124,6 +131,24 @@ $imgName = $ts->photo;
                                     <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                                     <input type="hidden" name="comment_id" value="{{ $c->id }}">
                                     <input type="hidden" name="thread_id" value="{{ $thread->id }}">
+                                    <button type="submit" class="btn btn-outline-success">Submit</button>
+                                </form>
+                            </div>
+                            <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}-edit">
+                                <form method="POST" action="{{ route('comment.update') }}">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <textarea class="form-control @error('comment') is-invalid @enderror"
+                                            name="comment" id="comment" maxlength="255" cols="51" rows="3"
+                                            placeholder="Write your comment here" required>{{ $c->comment }}</textarea>
+                                        @error('comment')
+                                        <div class="alert alert-danger" role="alert">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <input type="hidden" name="id" value="{{ $c->id }}">
+                                    <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                                    <input type="hidden" name="thread_id" value="{{ $thread->id }}">
+
                                     <button type="submit" class="btn btn-outline-success">Submit</button>
                                 </form>
                             </div>

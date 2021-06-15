@@ -67,12 +67,15 @@ class CommentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request)
     {
-        //
+        $comment = Comment::find($request->id);
+
+        $comment->comment = $request->comment;
+        $comment->save();
+        return redirect('/thread' . '/' . $comment->thread_id);
     }
 
     /**
