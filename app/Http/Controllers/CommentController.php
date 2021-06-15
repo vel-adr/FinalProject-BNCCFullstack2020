@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function __constructor()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Show the form for creating a new resource.
      * @param \Illuminate\Http\Request
@@ -27,6 +31,7 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'user_id' => 'required',
             'comment' => 'required|max:255'
         ]);
 

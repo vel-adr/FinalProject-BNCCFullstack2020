@@ -41,17 +41,18 @@ $imgName = $ts->photo;
 
 
                 <div class="card-body">
-                    <h4 class="card-title">{{ $thread->title }}</h4>
+                    <h4 class="card-title"><strong>{{ $thread->title }}</strong></h4>
                     <p class="card-text">{{ $thread->content }}</p>
                 </div>
 
 
                 <div class="card-footer">
                     <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
-                        data-target="#collapse-exp" aria-expanded="false" aria-controls="collapse-exp">
+                        data-target="#collapse-comment @if(Auth::id() == null){{ '-invalid' }}@endif"
+                        aria-expanded="false" aria-controls="collapse-comment">
                         Comment
                     </button>
-                    <div class="collapse mt-3" id="collapse-exp">
+                    <div class="collapse mt-3" id="collapse-comment">
                         <form method="POST" action="{{ route('comment.create') }}">
                             @csrf
                             <div class="mb-3">
@@ -63,26 +64,37 @@ $imgName = $ts->photo;
                                 @enderror
                             </div>
 
-                            {{-- sementara profileid selalu 1 karena belum ada login --}}
-                            <input type="hidden" name="user_id" value="1">
+                            <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                             <input type="hidden" name="thread_id" value="{{ $thread->id }}">
 
                             <button type="submit" class="btn btn-outline-success">Submit</button>
                         </form>
                     </div>
+                    <div class="collapse mt-3" id="collapse-comment-invalid">
+                        <div class="alert alert-danger mt-3" role="alert">
+                            You must log in to comment!
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <div class="thread-comments mt-3 ">
-        <div class="card">
+    @error('user_id')
+    <div class="alert alert-danger alert-dismissible mt-3 fade show" role="alert">
+        You must log in to comment!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    @enderror
+
+    <div class="thread-comments mt-3">
+        @foreach ($comments as $c)
+        <div class="card my-3">
             <div class="row">
                 <div class="col-md-12">
-                    @foreach ($comments as $c)
-                    <div class="media px-4 py-4 my-3 border-top border-bottom bg-light">
-
+                    <div class="media px-4 py-4 my-3">
                         <div class="user mr-3">
                             <img src="{{ url('/img/' . $imgName) }}" alt="..."
                                 style="width: 40px; height: 40px; border-radius:50%">
@@ -94,11 +106,11 @@ $imgName = $ts->photo;
                         <div class="col media-body">
                             <p class="mt-2">{{ $c->comment }}</p>
                             <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
-                                data-target="#commentcollapse{{ $c->id }}" aria-expanded="false"
-                                aria-controls="commentcollapse{{ $c->id }}">
+                                data-target="#collapse-comment-{{ $c->id }}@if(Auth::id()==null){{ "-invalid" }}@endif"
+                                aria-expanded="false" aria-controls="collapse-comment-{{ $c->id }}">
                                 Reply
                             </button>
-                            <div class="collapse mt-3" id="commentcollapse{{ $c->id }}">
+                            <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}">
                                 <form method="POST" action="{{ route('reply.create') }}">
                                     @csrf
                                     <div class="mb-3">
@@ -109,36 +121,43 @@ $imgName = $ts->photo;
                                         <div class="alert alert-danger" role="alert">{{ $message }}</div>
                                         @enderror
                                     </div>
-
-                                    {{-- sementara profileid selalu 1 karena belum ada login --}}
-                                    <input type="hidden" name="user_id" value="1">
+                                    <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                                     <input type="hidden" name="comment_id" value="{{ $c->id }}">
                                     <input type="hidden" name="thread_id" value="{{ $thread->id }}">
-
                                     <button type="submit" class="btn btn-outline-success">Submit</button>
                                 </form>
+                            </div>
+                            <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}-invalid">
+                                <div class="alert alert-danger mt-3" role="alert">
+                                    You must log in to comment!
+                                </div>
                             </div>
 
                             @if ($c->replies != null)
                             @foreach ($c->replies as $rep)
-                            <div class="media mt-4 py-4 px-4 border">
-                                <div class="user mr-3">
-                                    <img src="{{ url('/img/' . $imgName) }}" alt="..."
-                                        style="width: 40px; height: 40px; border-radius:50%">
-                                    <p><strong>{{ $rep->user->name }}</strong></p>
-                                </div>
-                                <div class="col media-body">
-                                    <p class="mt-2">{{ $rep->reply }}</p>
+                            <div class="card my-3">
+                                <div class="media py-4 px-4">
+                                    <div class="user mr-3">
+                                        <img src="{{ url('/img/' . $imgName) }}" alt="..."
+                                            style="width: 40px; height: 40px; border-radius:50%">
+                                        <p><strong>{{ $rep->user->name }}</strong></p>
+                                        <p><small>{{ date_format($rep->updated_at, 'd-m-Y') }}</small></p>
+                                        <p><small>{{ date_format($rep->updated_at, 'H:i') }}</small></p>
+                                    </div>
+                                    <div class="col media-body">
+                                        <p class="mt-2">{{ $rep->reply }}</p>
+                                    </div>
                                 </div>
                             </div>
                             @endforeach
                             @endif
-                        </div>
 
+                        </div>
                     </div>
-                    @endforeach
                 </div>
             </div>
         </div>
+        @endforeach
     </div>
-    @endsection
+</div>
+@endsection

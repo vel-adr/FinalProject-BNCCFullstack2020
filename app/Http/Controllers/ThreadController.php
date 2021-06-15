@@ -93,8 +93,9 @@ class ThreadController extends Controller
         $thread->save();
 
         $comments = $thread->comments;
+        $ts = $thread->user;
 
-        return view('thread.detail', compact('thread', 'comments'));
+        return view('thread.detail', compact('thread', 'comments', 'ts'));
     }
 
     /**
