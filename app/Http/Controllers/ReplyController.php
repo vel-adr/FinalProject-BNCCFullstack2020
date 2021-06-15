@@ -51,12 +51,15 @@ class ReplyController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reply  $reply
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reply $reply)
+    public function update(Request $request)
     {
-        //
+        $reply = Reply::find($request->id);
+
+        $reply->reply = $request->reply;
+        $reply->save();
+        return redirect('/thread' . '/' . $request->thread_id);
     }
 
     /**

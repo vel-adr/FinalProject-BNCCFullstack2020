@@ -171,6 +171,32 @@ $imgName = $ts->photo;
                                     </div>
                                     <div class="col media-body">
                                         <p class="mt-2">{{ $rep->reply }}</p>
+                                        @if ($c->user_id == Auth::id())
+                                        <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
+                                            data-target="#collapse-reply-{{ $rep->id }}-edit" aria-expanded="false"
+                                            aria-controls="collapse-reply-{{ $rep->id }}">
+                                            Edit
+                                        </button>
+                                        <div class="collapse mt-3" id="collapse-reply-{{ $rep->id }}-edit">
+                                            <form method="POST" action="{{ route('reply.update') }}">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <textarea class="form-control @error('reply') is-invalid @enderror"
+                                                        name="reply" id="reply" maxlength="255" cols="51" rows="3"
+                                                        placeholder="Write your reply here"
+                                                        required>{{ $rep->reply }}</textarea>
+                                                    @error('reply')
+                                                    <div class="alert alert-danger" role="alert">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <input type="hidden" name="id" value="{{ $rep->id }}">
+                                                <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                                                <input type="hidden" name="thread_id" value="{{ $thread->id }}">
+
+                                                <button type="submit" class="btn btn-outline-success">Submit</button>
+                                            </form>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
