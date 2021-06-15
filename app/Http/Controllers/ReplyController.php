@@ -65,11 +65,16 @@ class ReplyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reply  $reply
+     * @param  int  $reply
+     * @param \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reply $reply)
+    public function destroy(Request $request, int $id)
     {
-        //
+        $reply = Reply::find($id);
+
+        $reply->delete();
+
+        return redirect('/thread' . '/' . $request->thread_id);
     }
 }

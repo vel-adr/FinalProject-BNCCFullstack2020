@@ -177,6 +177,12 @@ $imgName = $ts->photo;
                                             aria-controls="collapse-reply-{{ $rep->id }}">
                                             Edit
                                         </button>
+                                        <form action="{{ route('reply.delete', ['id' => $rep->id]) }}" method="POST">
+                                            @csrf
+                                            @method('delete')
+                                            <input type="hidden" name="thread_id" value="{{ $thread->id }}">
+                                            <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                        </form>
                                         <div class="collapse mt-3" id="collapse-reply-{{ $rep->id }}-edit">
                                             <form method="POST" action="{{ route('reply.update') }}">
                                                 @csrf
