@@ -116,6 +116,12 @@ $imgName = $ts->photo;
                                 aria-controls="collapse-comment-{{ $c->id }}">
                                 Edit
                             </button>
+                            <form action="{{ route('comment.delete', ['id' => $c->id]) }}" method="POST">
+                                @csrf
+                                @method('delete')
+                                <input type="hidden" name="thread_id" value="{{ $thread->id }}">
+                                <button type="submit" class="btn btn-outline-danger">Delete</button>
+                            </form>
                             @endif
                             <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}">
                                 <form method="POST" action="{{ route('reply.create') }}">
