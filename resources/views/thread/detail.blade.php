@@ -10,7 +10,10 @@ $imgName = $ts->photo;
 <div class="container">
     <div class="row thread-content">
         <div class="col">
+
+            {{-- Thread Card --}}
             <div class="card">
+                {{-- Card Header --}}
                 <div class="card-header">
                     <div class="row justify-content-between">
                         <div class="col d-flex align-items-center">
@@ -31,27 +34,36 @@ $imgName = $ts->photo;
                             </div>
                         </div>
 
+                        {{-- Edit thread button --}}
                         @if (Auth::id() == $thread->user_id)
                         <div class="col-sm-2">
                             <a href="/thread/{{ $thread->id }}/edit" class="btn btn-outline-success">Edit Thread</a>
                         </div>
                         @endif
+
                     </div>
                 </div>
 
-
+                {{-- Card Body --}}
                 <div class="card-body">
                     <h4 class="card-title"><strong>{{ $thread->title }}</strong></h4>
                     <p class="card-text">{{ $thread->content }}</p>
                 </div>
 
-
+                {{-- Card Footer --}}
                 <div class="card-footer">
+
+
+                    @if ($thread->status == "open")
+                    <!-- Check thread status, if true show comment button -->
+                    {{-- Button to trigger comment form collapse --}}
                     <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
                         data-target="#collapse-comment @if(Auth::id() == null){{ '-invalid' }}@endif"
                         aria-expanded="false" aria-controls="collapse-comment">
                         Comment
                     </button>
+
+                    {{-- Comment Form for logged in user --}}
                     <div class="collapse mt-3" id="collapse-comment">
                         <form method="POST" action="{{ route('comment.create') }}">
                             @csrf
@@ -63,23 +75,27 @@ $imgName = $ts->photo;
                                 <div class="alert alert-danger" role="alert">{{ $message }}</div>
                                 @enderror
                             </div>
-
                             <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                             <input type="hidden" name="thread_id" value="{{ $thread->id }}">
-
                             <button type="submit" class="btn btn-outline-success">Submit</button>
                         </form>
                     </div>
+
+                    {{-- Alert collapse for guest --}}
                     <div class="collapse mt-3" id="collapse-comment-invalid">
                         <div class="alert alert-danger mt-3" role="alert">
                             You must log in to comment!
                         </div>
                     </div>
+                    @endif
+
                 </div>
             </div>
+
         </div>
     </div>
 
+    {{-- Error alert for guest who submit comment form --}}
     @error('user_id')
     <div class="alert alert-danger alert-dismissible mt-3 fade show" role="alert">
         You must log in to comment!
@@ -89,12 +105,16 @@ $imgName = $ts->photo;
     </div>
     @enderror
 
+    {{-- Comments container --}}
     <div class="thread-comments mt-3">
         @foreach ($comments as $c)
+        {{-- Comment card --}}
         <div class="card my-3">
             <div class="row">
                 <div class="col-md-12">
                     <div class="media px-4 py-4 my-3">
+
+                        {{-- User row --}}
                         <div class="user mr-3">
                             <img src="{{ url('/img/' . $imgName) }}" alt="..."
                                 style="width: 40px; height: 40px; border-radius:50%">
@@ -103,26 +123,38 @@ $imgName = $ts->photo;
                             <p>{{ date_format($c->updated_at, 'H:i') }}</p>
                         </div>
 
+                        {{-- Body row --}}
                         <div class="col media-body">
                             <p class="mt-2">{{ $c->comment }}</p>
+                            @if ($thread->status == "open")
+                            <!-- Check thread status, if true show reply button -->
                             <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
                                 data-target="#collapse-comment-{{ $c->id }}@if(Auth::id()==null){{ "-invalid" }}@endif"
                                 aria-expanded="false" aria-controls="collapse-comment-{{ $c->id }}">
                                 Reply
                             </button>
-                            @if ($c->user_id == Auth::id())
+                            @endif
+
+
+                            @if ($c->user_id == Auth::id() && $thread->status == "open")
+                            {{-- Check if the comment belongs to user that logged in and if thread status is open, if true show edit and delete button --}}
+                            {{-- Edit button --}}
                             <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
                                 data-target="#collapse-comment-{{ $c->id }}-edit" aria-expanded="false"
                                 aria-controls="collapse-comment-{{ $c->id }}">
                                 Edit
                             </button>
+
+                            {{-- Delete button --}}
                             <form action="{{ route('comment.delete', ['id' => $c->id]) }}" method="POST">
                                 @csrf
                                 @method('delete')
                                 <input type="hidden" name="thread_id" value="{{ $thread->id }}">
                                 <button type="submit" class="btn btn-outline-danger">Delete</button>
                             </form>
-                            @endif
+                            {{-- @endif asalnya disini --}}
+
+                            {{-- Reply Form (Collapse) --}}
                             <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}">
                                 <form method="POST" action="{{ route('reply.create') }}">
                                     @csrf
@@ -140,6 +172,8 @@ $imgName = $ts->photo;
                                     <button type="submit" class="btn btn-outline-success">Submit</button>
                                 </form>
                             </div>
+
+                            {{-- Comment Update Form (Collapse) --}}
                             <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}-edit">
                                 <form method="POST" action="{{ route('comment.update') }}">
                                     @csrf
@@ -158,16 +192,24 @@ $imgName = $ts->photo;
                                     <button type="submit" class="btn btn-outline-success">Submit</button>
                                 </form>
                             </div>
+
+                            {{-- Reply Form Alert for guest --}}
                             <div class="collapse mt-3" id="collapse-comment-{{ $c->id }}-invalid">
                                 <div class="alert alert-danger mt-3" role="alert">
                                     You must log in to comment!
                                 </div>
                             </div>
+                            @endif
+
 
                             @if ($c->replies != null)
+                            <!-- Check if there are replies for this comment-->
                             @foreach ($c->replies as $rep)
+                            <!-- Loop to show if there is any -->
                             <div class="card my-3">
                                 <div class="media py-4 px-4">
+
+                                    {{-- User row --}}
                                     <div class="user mr-3">
                                         <img src="{{ url('/img/' . $imgName) }}" alt="..."
                                             style="width: 40px; height: 40px; border-radius:50%">
@@ -175,20 +217,30 @@ $imgName = $ts->photo;
                                         <p><small>{{ date_format($rep->updated_at, 'd-m-Y') }}</small></p>
                                         <p><small>{{ date_format($rep->updated_at, 'H:i') }}</small></p>
                                     </div>
+
+                                    {{-- Body row --}}
                                     <div class="col media-body">
                                         <p class="mt-2">{{ $rep->reply }}</p>
-                                        @if ($c->user_id == Auth::id())
+
+                                        @if ($c->user_id == Auth::id() && $thread->status == "open")
+                                        <!-- To check if the reply belongs to user that logged in -->
+
+                                        {{-- Reply edit button --}}
                                         <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse"
                                             data-target="#collapse-reply-{{ $rep->id }}-edit" aria-expanded="false"
                                             aria-controls="collapse-reply-{{ $rep->id }}">
                                             Edit
                                         </button>
+
+                                        {{-- Reply delete button --}}
                                         <form action="{{ route('reply.delete', ['id' => $rep->id]) }}" method="POST">
                                             @csrf
                                             @method('delete')
                                             <input type="hidden" name="thread_id" value="{{ $thread->id }}">
                                             <button type="submit" class="btn btn-outline-danger">Delete</button>
                                         </form>
+
+                                        {{-- Reply update form --}}
                                         <div class="collapse mt-3" id="collapse-reply-{{ $rep->id }}-edit">
                                             <form method="POST" action="{{ route('reply.update') }}">
                                                 @csrf
@@ -209,6 +261,7 @@ $imgName = $ts->photo;
                                             </form>
                                         </div>
                                         @endif
+
                                     </div>
                                 </div>
                             </div>

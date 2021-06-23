@@ -31,8 +31,19 @@ $url = '/thread' . '/' . $thread->id;
         <div class="alert alert-danger" role="alert">{{ $message }}</div>
         @enderror
 
+        <div class="mb-3">
+            <p>Thread status:</p>
+            <div class="custom-control custom-switch">
+                @if ($thread->status == "open")
+                <input type="checkbox" class="custom-control-input" id="status" name="status" value="close">
+                @else
+                <input type="checkbox" class="custom-control-input" id="status" name="status" value="close" checked>
+                @endif
+                <label class="custom-control-label" for="status">Close thread</label>
+            </div>
+        </div>
+
         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-        <input type="hidden" name="status" value="open">
 
         <button type="submit" class="btn btn-outline-success">Submit</button>
     </form>

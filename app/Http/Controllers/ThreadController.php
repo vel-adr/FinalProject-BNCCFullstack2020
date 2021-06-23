@@ -90,6 +90,12 @@ class ThreadController extends Controller
         $thread = Thread::find($id);
         $thread->title = $request->title;
         $thread->content = $request->content;
+        if(isset($request->status) && $request->status == "close"){
+            $thread->status = $request->status;
+        }
+        else {
+            $thread->status = "open";
+        }
         $thread->save();
 
         $comments = $thread->comments;
