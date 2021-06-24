@@ -23,6 +23,14 @@ Route::resource('thread', 'ThreadController');
 
 Route::get('/user/{id}', 'UserController@show');
 
+Route::get('/user/{id}/thread', 'UserController@showThread');
+
+Route::get('/user/{id}/comment', 'UserController@showComment');
+
+Route::get('/user/{id}/edit', 'UserController@edit');
+
+Route::put('/user/{id}', 'UserController@update');
+
 Route::post('/comment/create/{id}', 'CommentController@create')->name('comment.form');
 
 Route::post('/comment/store', 'CommentController@store')->name('comment.create');

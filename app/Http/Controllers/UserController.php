@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use File;
 
 class UserController extends Controller
 {
@@ -48,21 +49,43 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $threads = $user->threads;
-
-        // dd($user);
+        $comments = $user->comments;
+        $replies = $user->replies;
         
-        return view('user.detail', compact('user', 'threads'));
+        return view('user.post', compact('user', 'threads', 'comments', 'replies'));
+    }
+
+    public function showThread($id)
+    {
+        $user = User::find($id);
+        $threads = $user->threads;
+        $comments = $user->comments;
+        $replies = $user->replies;
+        
+        return view('user.thread', compact('user', 'threads', 'comments', 'replies'));
+    }
+
+    public function showComment($id)
+    {
+        $user = User::find($id);
+        $threads = $user->threads;
+        $comments = $user->comments;
+        $replies = $user->replies;
+        
+        return view('user.comment', compact('user', 'threads', 'comments', 'replies'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  int  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(int $id)
     {
-        //
+        $user = User::find($id);
+
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -74,7 +97,18 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user = User::find($request->id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if(isset($request->photo)) {
+            File::delete('img/' . $user->photo);
+            $imgName = $request->photo->getClientOriginalName() . '-' .  time() . '.' . $request->photo->extension();
+            $request->photo->move(public_path('img'), $imgName);
+            $user->photo = $imgName;
+        }
+        $user->save();
+
+        return redirect('/user/' . $request->id);
     }
 
     /**
