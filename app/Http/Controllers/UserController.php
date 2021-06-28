@@ -5,38 +5,13 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use File;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        $this->middleware('auth', ['except' => ['show', 'showThread', 'showComment']]);
     }
 
     /**
@@ -83,9 +58,14 @@ class UserController extends Controller
      */
     public function edit(int $id)
     {
-        $user = User::find($id);
+        if(Auth::id() != $id) {
+            return redirect('/user/' . Auth::id());
+        }
+        else{
+            $user = User::find($id);
 
-        return view('user.edit', compact('user'));
+            return view('user.edit', compact('user'));
+        }
     }
 
     /**
@@ -98,13 +78,40 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $user = User::find($request->id);
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'photo' => ['mimes:jpeg,jpg,png,svg,gif', 'max:4096'],
+            'cover' => ['mimes:jpeg,jpg,png,svg,gif', 'max:4096'],
+        ]);
+
+        if($request->email != $user->email){
+            $request->validate([
+                'email' => 'unique:users'
+            ]);
+        }
+
         $user->name = $request->name;
         $user->email = $request->email;
+
         if(isset($request->photo)) {
-            File::delete('img/' . $user->photo);
+            if($user->photo != 'avatar-png.png'){
+                File::delete('img/' . $user->photo);
+            }
             $imgName = $request->photo->getClientOriginalName() . '-' .  time() . '.' . $request->photo->extension();
             $request->photo->move(public_path('img'), $imgName);
             $user->photo = $imgName;
+        }
+
+        if(isset($request->cover)) {
+            if($user->cover != 'bg.jpg'){
+                File::delete('img/' . $user->cover);
+            }
+            $imgName = $request->cover->getClientOriginalName() . '-' .  time() . '.' . $request->cover->extension();
+            $request->cover->move(public_path('img'), $imgName);
+            $user->cover = $imgName;
+            
         }
         $user->save();
 

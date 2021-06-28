@@ -37,13 +37,14 @@ array_multisort($update, SORT_DESC, $data);
             <a class="nav-link" href="/user/{{ $user->id }}/thread">Thread</a>
         </li>
         <li class="nav-item mx-2">
-            <a class="nav-link active" href="#">Comment & Replies</a>
+            <a class="nav-link active" href="#">Comment & Reply</a>
         </li>
     </ul>
 </div>
 
 <div class="card mt-3">
     <div class="card-body">
+        @if (count($data) > 0)
         <ul class="list-group list-group-flush">
             @foreach ($data as $d)
 
@@ -52,7 +53,7 @@ array_multisort($update, SORT_DESC, $data);
                 <p class="text-secondary">
                     <small><i class="fas fa-comment"></i> Membalas thread <a
                             href="/user/{{ $d["data"]->thread->user_id }}">{{ $d["data"]->thread->user->name }}</a> -
-                        {{ $d["data"]->created_at }} </small>
+                        {{ date_format($d["data"]->created_at, 'd-m-Y H:i') }} </small>
                 </p>
                 <h4>
                     <a href="/thread/{{ $d["data"]->thread_id }}">{{ $d["data"]->thread->title }}</a>
@@ -66,7 +67,7 @@ array_multisort($update, SORT_DESC, $data);
                 <p class="text-secondary">
                     <small><i class="fas fa-reply"></i> Membalas comment
                         <a href="/user/{{ $d["data"]->comment->user_id }}">{{ $d["data"]->comment->user->name }}</a> -
-                        {{ $d["data"]->created_at }} </small>
+                        {{ date_format($d["data"]->created_at, 'd-m-Y H:i') }} </small>
                 </p>
                 <h4>
                     <a href="/thread/{{ $d["data"]->comment->thread_id }}">{{ $d["data"]->comment->thread->title }}</a>
@@ -77,6 +78,14 @@ array_multisort($update, SORT_DESC, $data);
 
             @endforeach
         </ul>
+
+        @else
+        <div class="row">
+            <div class="col">
+                <p class="text-secondary text-center">Agan belum pernah melakukan comment dan reply</p>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 @endsection

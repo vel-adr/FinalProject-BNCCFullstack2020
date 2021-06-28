@@ -25,27 +25,6 @@ class ReplyController extends Controller
         return redirect($url);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Reply $reply)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reply $reply)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

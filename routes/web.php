@@ -17,10 +17,10 @@ Route::get('/', 'ThreadController@index');
 
 Auth::routes();
 
-// Route::get('/home', 'HomeController@index')->name('home');
-
+// Thread
 Route::resource('thread', 'ThreadController');
 
+// User
 Route::get('/user/{id}', 'UserController@show');
 
 Route::get('/user/{id}/thread', 'UserController@showThread');
@@ -31,6 +31,7 @@ Route::get('/user/{id}/edit', 'UserController@edit');
 
 Route::put('/user/{id}', 'UserController@update');
 
+// Comment
 Route::post('/comment/create/{id}', 'CommentController@create')->name('comment.form');
 
 Route::post('/comment/store', 'CommentController@store')->name('comment.create');
@@ -39,6 +40,7 @@ Route::post('/comment/update', 'CommentController@update')->name('comment.update
 
 Route::delete('/comment/{id}', 'CommentController@destroy')->name('comment.delete');
 
+// Reply
 Route::post('reply/store', 'ReplyController@store')->name('reply.create');
 
 Route::post('/reply/update', 'ReplyController@update')->name('reply.update');

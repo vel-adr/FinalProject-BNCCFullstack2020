@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @php
-$imgName = $user->photo;
+$profileImg = $user->photo;
+$coverImg = $user->cover;
 @endphp
 
 @section('title', '{{ $user->name }}')
@@ -10,14 +11,17 @@ $imgName = $user->photo;
 <div class="container">
     {{-- User info --}}
     <div class="card">
-        <div class="card-body">
-            <div class="row align-items-end">
+        <div class="card-body p-0 overflow-hidden">
+            <div class="row cover">
+                <img src="{{ url('/img/' . $coverImg) }}" alt="" style="width: 100%; height: 150px; background-position: center; object-fit: cover">
+            </div>
+            <div class="row align-items-end px-3" style="position: relative; top: -30px">
                 <div class="col-lg-1 mr-5 no-gutters">
-                    <img src="{{ url('/img/' . $imgName) }}" alt=""
-                        style="width: 100px; height: 100px; border-radius:50%; border: 2px solid #282828">
+                    <img src="{{ url('/img/' . $profileImg) }}" alt=""
+                        style="width: 100px; height: 100px; border-radius:50%; border: 4px solid #fff; object-fit:cover">
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-lg-8">
                     <div class="row">
                         <div class="col">
                             <h3>{{ $user->name }}</h3>
@@ -26,15 +30,18 @@ $imgName = $user->photo;
                     </div>
                     <div class="row">
                         <div class="col">
-                            <div>Joined {{ date_format($user->created_at, "d - m - Y") }}</div>
+                            <div>Bergabung {{ date_format($user->created_at, "d - m - Y") }}</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col">
+                @if ($user->id == Auth::id())
+                <div class="col justify-content-lg-end d-flex mt-3">
                     <a href="/user/{{ $user->id }}/edit" class="btn btn-outline-success"><i class="fas fa-pen"></i> Edit
                         Profile</a>
                 </div>
+                @endif
+                
             </div>
         </div>
     </div>
@@ -61,7 +68,7 @@ $imgName = $user->photo;
             </div>
         </div>
 
-        <div class="col">
+        <div class="col mt-3">
             @yield('usercontent')
         </div>
     </div>

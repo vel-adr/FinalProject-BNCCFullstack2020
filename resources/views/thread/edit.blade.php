@@ -8,44 +8,61 @@ $url = '/thread' . '/' . $thread->id;
 
 @section('content')
 <div class="container">
-    <h1>Create a question</h1>
-    <form method="POST" action="{{ url($url) }}">
-        @csrf
-        @method('PUT')
-        <div class="mb-3">
-            <label class="form-label" for="title">Thread title:</label>
-            <input class="form-control" type="text" name="title" id="title" placeholder="Write your thread's title here"
-                maxlength="45" size="45" value="{{ $thread->title }}" required>
-        </div>
-        @error('title')
-        <div class="alert alert-danger" role="alert">{{ $message }}
-        </div>
-        @enderror
+    <div class="row justify-content-md-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url($url) }}">
+                        @csrf
+                        @method('PUT')
 
-        <div class="mb-3">
-            <label class="form-label" for="content">Content: </label>
-            <textarea class="form-control" name="content" id="content" maxlength="255" cols="51" rows="5"
-                placeholder="Write your thread's content here" required>{{ $thread->content }}</textarea>
-        </div>
-        @error('content')
-        <div class="alert alert-danger" role="alert">{{ $message }}</div>
-        @enderror
+                        @php
+                        $img = Auth::user()->photo;
+                        @endphp
 
-        <div class="mb-3">
-            <p>Thread status:</p>
-            <div class="custom-control custom-switch">
-                @if ($thread->status == "open")
-                <input type="checkbox" class="custom-control-input" id="status" name="status" value="close">
-                @else
-                <input type="checkbox" class="custom-control-input" id="status" name="status" value="close" checked>
-                @endif
-                <label class="custom-control-label" for="status">Close thread</label>
+                        <div class="mb-3">
+                            <label for="title"><strong>Judul</strong></label>
+                            <input class="form-control @error('title') is-invalid @enderror" type="text" name="title"
+                                id="title" placeholder="Isi judul thread" maxlength="45" size="45" required
+                                value="{{ $thread->title }}">
+                            @error('title')
+                            <div class="alert alert-danger" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="content"><strong>Konten</strong></label>
+                            <textarea class="form-control @error('content') is-invalid @enderror" name="content"
+                                id="content" maxlength="255" cols="51" rows="5" placeholder="Isi konten thread"
+                                required>{{ $thread->content }}</textarea>
+                            @error('content')
+                            <div class="alert alert-danger" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <p><strong>Status Thread:</strong></p>
+                            <div class="custom-control custom-switch">
+                                @if ($thread->status == "open")
+                                <input type="checkbox" class="custom-control-input" id="status" name="status"
+                                    value="close">
+                                @else
+                                <input type="checkbox" class="custom-control-input" id="status" name="status"
+                                    value="close" checked>
+                                @endif
+                                <label class="custom-control-label" for="status">Close</label>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+
+                        <button type="submit" class="btn btn-success btn-block mt-3">Update</button>
+
+                    </form>
+                </div>
             </div>
         </div>
+    </div>
 
-        <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-
-        <button type="submit" class="btn btn-outline-success">Submit</button>
-    </form>
 </div>
 @endsection

@@ -19,7 +19,7 @@ class ThreadController extends Controller
      */
     public function index()
     {
-        $threads = Thread::all();
+        $threads = Thread::orderBy('created_at', 'desc')->paginate(6);
         return view('thread.index', compact('threads'));
     }
 
@@ -115,8 +115,6 @@ class ThreadController extends Controller
         $thread = Thread::find($id);
         $thread->delete();
 
-        $threads = Thread::all();
-
-        return view('thread.index', compact('threads'));
+        return redirect('/thread');
     }
 }
