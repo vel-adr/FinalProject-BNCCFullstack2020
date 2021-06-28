@@ -68,8 +68,9 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a href="/user/{{ Auth::user()->id }}" class="dropdown-item">Lihat Profile</a>
-                                <a href="/user/{{ Auth::user()->id }}/edit" class="dropdown-item">Edit Profile</a>
+                                <a href="/user/{{ Auth::id() }}" class="dropdown-item">Lihat Profile</a>
+                                <a href="/user/{{ Auth::id() }}/edit" class="dropdown-item">Edit Profile</a>
+                                <a href="/user/{{ Auth::id() }}/edit/password" class="dropdown-item">Ganti Password</a>
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     {{ __('Logout') }}

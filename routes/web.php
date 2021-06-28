@@ -29,7 +29,11 @@ Route::get('/user/{id}/comment', 'UserController@showComment');
 
 Route::get('/user/{id}/edit', 'UserController@edit');
 
+Route::get('/user/{id}/edit/password', 'UserController@editPassword');
+
 Route::put('/user/{id}', 'UserController@update');
+
+Route::put('/user/{id}/password', 'UserController@updatePassword');
 
 // Comment
 Route::post('/comment/create/{id}', 'CommentController@create')->name('comment.form');

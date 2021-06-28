@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Illuminate\Http\Request;
 use File;
+use App\User;
+use App\Rules\CheckOldPassword;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -68,6 +70,18 @@ class UserController extends Controller
         }
     }
 
+    public function editPassword(int $id)
+    {
+        if(Auth::id() != $id) {
+            return redirect('/user/' . Auth::id());
+        }
+        else{
+            $user = User::find($id);
+
+            return view('user.editpass', compact('user'));
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -118,14 +132,16 @@ class UserController extends Controller
         return redirect('/user/' . $request->id);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
-    {
-        //
+    public function updatePassword(Request $request){
+        $request->validate([
+            'oldpassword' => ['string', 'min:8', new CheckOldPassword],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'different:oldpassword'],
+        ]);
+
+        $user = User::find($request->id);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect('/user/' . $request->id);
     }
 }
